@@ -35,10 +35,6 @@ func FindAll(entity interface{}) ([]interface{}, error) {
 
 }
 
-func find() {
-	// find in file and return data
-}
-
 func edit() {
 	// edit in file
 }

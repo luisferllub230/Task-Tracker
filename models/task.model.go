@@ -59,6 +59,35 @@ func ListTasksByInStatus(status []any) ([]Task, error) {
 	return taskList, nil
 }
 
+func FindTaskById(id int) (Task, error) {
+	var task, err = services.Read(Task{Id: id})
+	if err != nil {
+		return Task{}, err
+	}
+
+	if task == nil {
+		return Task{}, nil
+	}
+
+	var taskMap = task.(map[string]interface{})
+	findTask := Task{
+		Id:          int(taskMap["id"].(float64)),
+		Title:       taskMap["title"].(string),
+		Description: taskMap["description"].(string),
+		Status:      taskMap["status"].(string),
+	}
+	return findTask, nil
+}
+
+func UpdateStatusTask(newStatus string, taskId int) (Task, error) {
+	var task = Task{Id: taskId, Status: newStatus}
+	var updatedTask, err = services.Update(task)
+	if err != nil {
+		return Task{}, err
+	}
+	return updatedTask.(Task), nil
+}
+
 func isInList(value any, list []any) bool {
 	for _, item := range list {
 		if item == value {
