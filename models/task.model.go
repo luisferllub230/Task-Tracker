@@ -39,3 +39,31 @@ func ListTasks() ([]Task, error) {
 
 	return taskList, nil
 }
+
+func ListTasksByInStatus(status []any) ([]Task, error) {
+	tasks, err := ListTasks()
+
+	if err != nil {
+		return []Task{}, err
+	}
+
+	var taskList []Task
+	for _, task := range tasks {
+		if !isInList(task.Status, status) {
+			continue
+		}
+
+		taskList = append(taskList, task)
+	}
+
+	return taskList, nil
+}
+
+func isInList(value any, list []any) bool {
+	for _, item := range list {
+		if item == value {
+			return true
+		}
+	}
+	return false
+}

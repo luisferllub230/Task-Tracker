@@ -2,17 +2,13 @@ package main
 
 import (
 	"fmt"
-	"os/exec"
 
 	"github.com/luisferllub230/task_tracker/models"
 )
 
-func executeCommand(command string) {
-	cli := exec.Command("bash", "-c", command)
-
-	if err := cli.Run(); err != nil {
-		fmt.Println("\n\n Error: %s \n\n", err)
-	}
+// TODO: DONT WORK
+func clearScreen() {
+	fmt.Print("\033[H\033[2J")
 }
 
 func showMenuOptions() {
@@ -31,21 +27,47 @@ func showMenuOptions() {
 }
 
 func printTasks(tasks []models.Task) {
+	if len(tasks) == 0 {
+		fmt.Println("\n\nNo tasks to show\n\n")
+		return
+	}
 	for _, task := range tasks {
 		fmt.Printf("\n\n ID: %d \n Title: %s \n Description: %s \n Status: %s \n", task.Id, task.Title, task.Description, task.Status)
 	}
 }
 
 func main() {
-	var option int = 1
-	executeCommand("clear")
+	var option int = 0
+	clearScreen()
 	for {
 		showMenuOptions()
 		fmt.Scan(&option)
 		switch option {
 		case 1:
-			executeCommand("clear")
+			clearScreen()
 			tasks, err := models.ListTasks()
+
+			if err != nil {
+				fmt.Println("\n\n\nError: %w", err)
+				break
+			}
+			printTasks(tasks)
+			break
+
+		case 2:
+			clearScreen()
+			tasks, err := models.ListTasksByInStatus([]any{"done"})
+
+			if err != nil {
+				fmt.Println("\n\n\nError: %w", err)
+				break
+			}
+			printTasks(tasks)
+			break
+
+		case 3:
+			clearScreen()
+			tasks, err := models.ListTasksByInStatus([]any{"progress"})
 
 			if err != nil {
 				fmt.Println("\n\n\nError: %w", err)
