@@ -35,10 +35,12 @@ func FindAll(entity interface{}) ([]interface{}, error) {
 
 }
 
-func edit() {
-	// edit in file
-}
+func Save(entities []interface{}) error {
+	data, err := json.Marshal(entities)
 
-func save() {
-	// save in file
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(path, data, 0644)
 }

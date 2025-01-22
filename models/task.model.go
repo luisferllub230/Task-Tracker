@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	"github.com/luisferllub230/task_tracker/services"
 )
 
@@ -66,7 +68,7 @@ func FindTaskById(id int) (Task, error) {
 	}
 
 	if task == nil {
-		return Task{}, nil
+		return Task{}, errors.New("We could not find the task")
 	}
 
 	var taskMap = task.(map[string]interface{})
@@ -79,8 +81,7 @@ func FindTaskById(id int) (Task, error) {
 	return findTask, nil
 }
 
-func UpdateStatusTask(newStatus string, taskId int) (Task, error) {
-	var task = Task{Id: taskId, Status: newStatus}
+func UpdateTask(task Task) (Task, error) {
 	var updatedTask, err = services.Update(task)
 	if err != nil {
 		return Task{}, err

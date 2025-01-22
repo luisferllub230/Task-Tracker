@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/luisferllub230/task_tracker/models"
 )
@@ -88,6 +89,49 @@ func main() {
 			printTasks(tasks)
 			break
 
+		case 7:
+			clearScreen()
+			var id int = 0
+			fmt.Println("\n\nInsert the id of the task do you want to update. Press 0 to show all tasks")
+			fmt.Scan(&id)
+
+			if id == 0 {
+				clearScreen()
+				tasks, err := models.ListTasks()
+
+				if err != nil {
+					fmt.Println("\n\n\nError: ", err)
+				}
+				printTasks(tasks)
+				break
+			}
+
+			task, err := models.FindTaskById(id)
+			if err != nil {
+				fmt.Println("\n\n\nError: %w", err.Error())
+				break
+			}
+
+			reflectTask := reflect.ValueOf(&task).Elem()
+			numberOfFields := reflectTask.NumField()
+			i := 1
+			for {
+				field := reflectTask.Field(i)
+				fieldName := reflectTask.Type().Field(i).Name
+				fmt.Printf("Current value of the field %s: %v\n", fieldName, field.Interface())
+				fmt.Printf("New value: ")
+				var newValue string = ""
+				fmt.Scan(&newValue)
+				reflectTask.Field(i).Set(reflect.ValueOf(newValue))
+				i++
+				if i >= numberOfFields {
+					break
+				}
+			}
+
+			updateTask, _ := models.UpdateTask(task)
+			printTasks([]models.Task{updateTask})
+			break
 		case 9:
 			clearScreen()
 			var id int = 0
