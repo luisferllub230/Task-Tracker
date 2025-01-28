@@ -7,6 +7,13 @@ import (
 )
 
 func Create(model interface{}) (interface{}, error) {
+	data, err := db.FindAll(model)
+	if err != nil {
+		return nil, err
+	}
+
+	data = append(data, model)
+	db.Save(data)
 	return model, nil
 }
 

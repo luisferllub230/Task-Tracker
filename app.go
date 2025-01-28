@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/google/uuid"
 	"github.com/luisferllub230/task_tracker/models"
 )
 
@@ -119,7 +120,30 @@ func main() {
 			break
 
 		case 6:
-			// create a new task
+			clearScreen()
+			var task models.Task
+			numberOfFields := reflect.TypeOf(task).NumField()
+			i := 1
+			for {
+				fieldName := reflect.TypeOf(task).Field(i).Name
+				fmt.Printf("Insert the value of the field %s: ", fieldName)
+				var newValue string = ""
+				fmt.Scanln(&newValue)
+				reflect.ValueOf(&task).Elem().Field(i).Set(reflect.ValueOf(newValue))
+				i++
+				if i >= numberOfFields {
+					break
+				}
+			}
+
+			task.Id = int(uuid.New()[3])
+			newTask, err := models.CreateTask(task)
+			if err != nil {
+				fmt.Println("\n\n\nError: %w", err)
+				break
+			}
+
+			printTasks([]models.Task{newTask})
 			break
 
 		case 7:
