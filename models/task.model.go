@@ -89,6 +89,11 @@ func UpdateTask(task Task) (Task, error) {
 	return updatedTask.(Task), nil
 }
 
+func DeleteTask(task Task) error {
+	_, err := services.Delete(task)
+	return err
+}
+
 func isInList(value any, list []any) bool {
 	for _, item := range list {
 		if item == value {

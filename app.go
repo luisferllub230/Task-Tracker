@@ -8,7 +8,6 @@ import (
 	"github.com/luisferllub230/task_tracker/models"
 )
 
-// TODO: DONT WORK
 func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
@@ -192,7 +191,29 @@ func main() {
 			break
 
 		case 8:
-			// delete a task
+			clearScreen()
+			var id int = 0
+			fmt.Println("\n\nInsert the id of the task do you want to delete. Press 0 to show all tasks")
+			fmt.Scan(&id)
+
+			if id == 0 {
+				clearScreen()
+				tasks, err := models.ListTasks()
+
+				if err != nil {
+					fmt.Println("\n\n\nError: ", err)
+				}
+				printTasks(tasks)
+				break
+			}
+
+			task, err := models.FindTaskById(id)
+
+			err = models.DeleteTask(task)
+
+			if err != nil {
+				fmt.Println("\n\n\nError: %w", err)
+			}
 			break
 
 		case 9:
