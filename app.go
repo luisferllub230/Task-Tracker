@@ -89,6 +89,39 @@ func main() {
 			printTasks(tasks)
 			break
 
+		case 5:
+			clearScreen()
+			var id int = 0
+			fmt.Println("\n\nInsert the id of the task do you mark as done. Press 0 to show all tasks")
+			fmt.Scan(&id)
+
+			if id == 0 {
+				clearScreen()
+				tasks, err := models.ListTasks()
+
+				if err != nil {
+					fmt.Println("\n\n\nError: ", err)
+				}
+				printTasks(tasks)
+				break
+			}
+
+			task, err := models.FindTaskById(id)
+
+			if err != nil {
+				fmt.Println("\n\n\nError: %w", err)
+				break
+			}
+
+			task.Status = "done"
+			updateTask, _ := models.UpdateTask(task)
+			printTasks([]models.Task{updateTask})
+			break
+
+		case 6:
+			// create a new task
+			break
+
 		case 7:
 			clearScreen()
 			var id int = 0
@@ -121,7 +154,8 @@ func main() {
 				fmt.Printf("Current value of the field %s: %v\n", fieldName, field.Interface())
 				fmt.Printf("New value: ")
 				var newValue string = ""
-				fmt.Scan(&newValue)
+				// TODO: FIX error when user use bland input
+				fmt.Scanln(&newValue)
 				reflectTask.Field(i).Set(reflect.ValueOf(newValue))
 				i++
 				if i >= numberOfFields {
@@ -132,6 +166,11 @@ func main() {
 			updateTask, _ := models.UpdateTask(task)
 			printTasks([]models.Task{updateTask})
 			break
+
+		case 8:
+			// delete a task
+			break
+
 		case 9:
 			clearScreen()
 			var id int = 0
